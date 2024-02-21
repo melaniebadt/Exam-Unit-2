@@ -47,10 +47,10 @@ namespace HTTPUtils
         public async Task<Response> Get(string url)
         {
             int statusCode = 0;
-            String? respons = null;
+            String? response = null;
             try
             {
-                respons = await httpClient.GetStringAsync(url);
+                response = await httpClient.GetStringAsync(url);
                 statusCode = 200;
             }
             catch (HttpRequestException e)
@@ -60,19 +60,19 @@ namespace HTTPUtils
                 Console.Error.WriteLine(e.Message);
             }
 
-            return new Response() { content = respons, statusCode = statusCode, url = url };
+            return new Response() { content = response, statusCode = statusCode, url = url };
 
         }
 
         public async Task<Response> Post(string url, string content)
         {
             int statusCode = 0;
-            String? respons = null;
+            String? response = null;
             try
             {
                 Answer answer = new Answer() { answer = content };
                 var response = await httpClient.PostAsJsonAsync(url, answer);
-                respons = await response.Content.ReadAsStringAsync();
+                response = await response.Content.ReadAsStringAsync();
                 statusCode = (int)response.StatusCode;
             }
             catch (HttpRequestException e)
@@ -82,7 +82,7 @@ namespace HTTPUtils
                 Console.Error.WriteLine(e.Message);
             }
 
-            return new Response() { content = respons, statusCode = statusCode, url = url };
+            return new Response() { content = response, statusCode = statusCode, url = url };
         }
 
 

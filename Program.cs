@@ -1,96 +1,27 @@
-﻿#pragma warning disable CS8618
-#pragma warning disable CS8625
+﻿using HTTPUtils;
+using System.Text.Json;
+using AnsiTools;
+using Colors = AnsiTools.ANSICodes.Colors;
 
-using System.Net.Http.Json;
-using System.Text;
+Console.Clear();
+Console.WriteLine("Starting Assignment 2");
 
-namespace HTTPUtils
-{
-    class Response
-    {
-        public string? content { get; set; }
-        public int statusCode { get; set; }
-        public string url { get; set; }
+// SETUP 
+const string myPersonalID = ""; // GET YOUR PERSONAL ID FROM THE ASSIGNMENT PAGE https://mm-203-module-2-server.onrender.com/
+const string baseURL = "https://mm-203-module-2-server.onrender.com/";
+const string startEndpoint = "start/"; // baseURl + startEndpoint + myPersonalID
+const string taskEndpoint = "task/";   // baseURl + taskEndpoint + myPersonalID + "/" + taskID
 
-        public override string ToString()
-        {
-            return $"Response ({statusCode})\n{url} \n{content}";
-        }
-    }
+// Creating a variable for the HttpUtils so that we dont have to type HttpUtils.instance every time we want to use it
+HttpUtils httpUtils = HttpUtils.instance;
 
-    class HttpUtils
-    {
+//#### REGISTRATION
+// We start by registering and getting the first task
+Response startRespons = await httpUtils.Get(baseURL + startEndpoint + myPersonalID);
+Console.WriteLine($"Start:\n{Colors.Magenta}{startRespons}{ANSICodes.Reset}\n\n"); // Print the response from the server to the console
+string taskID = ""; // We get the taskID from the previous response and use it to get the task (look at the console output to find the taskID)
 
-        private HttpClient httpClient = new HttpClient();
-
-
-        private static HttpUtils _instance = null;
-
-        public static HttpUtils instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new HttpUtils();
-                }
-                return _instance;
-            }
-        }
-
-        private HttpUtils()
-        {
-
-        }
-
-
-        public async Task<Response> Get(string url)
-        {
-            int statusCode = 0;
-            String? respons = null;
-            try
-            {
-                respons = await httpClient.GetStringAsync(url);
-                statusCode = 200;
-            }
-            catch (HttpRequestException e)
-            {
-                statusCode = (int)(e.StatusCode ?? 0);
-                Console.Error.WriteLine($"Error : {statusCode} ");
-                Console.Error.WriteLine(e.Message);
-            }
-
-            return new Response() { content = respons, statusCode = statusCode, url = url };
-
-        }
-
-        public async Task<Response> Post(string url, string content)
-        {
-            int statusCode = 0;
-            String? respons = null;
-            try
-            {
-                Answer answer = new Answer() { answer = content };
-                var response = await httpClient.PostAsJsonAsync(url, answer);
-                respons = await response.Content.ReadAsStringAsync();
-                statusCode = (int)response.StatusCode;
-            }
-            catch (HttpRequestException e)
-            {
-                statusCode = (int)(e.StatusCode ?? 0);
-                Console.Error.WriteLine($"Error : {statusCode} ");
-                Console.Error.WriteLine(e.Message);
-            }
-
-            return new Response() { content = respons, statusCode = statusCode, url = url };
-        }
-
-
-    }
-
-    class Answer
-    {
-        public string answer { get; set; }
-    }
-
-}
+//#### FIRST TASK 
+// Fetch the details of the task from the server.
+Response task1Response = await httpUtils.Get(baseURL + taskEndpoint + myPersonalID + "/" + taskID); // Get the task from the server
+Console.WriteLine(task1Response);
