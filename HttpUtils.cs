@@ -67,12 +67,12 @@ namespace HTTPUtils
         public async Task<Response> Post(string url, string content)
         {
             int statusCode = 0;
-            String? response = null;
+            String? respons = null;
             try
             {
                 Answer answer = new Answer() { answer = content };
                 var response = await httpClient.PostAsJsonAsync(url, answer);
-                response = await response.Content.ReadAsStringAsync();
+                respons = await response.Content.ReadAsStringAsync();
                 statusCode = (int)response.StatusCode;
             }
             catch (HttpRequestException e)
@@ -82,9 +82,8 @@ namespace HTTPUtils
                 Console.Error.WriteLine(e.Message);
             }
 
-            return new Response() { content = response, statusCode = statusCode, url = url };
+            return new Response() { content = respons, statusCode = statusCode, url = url };
         }
-
 
     }
 
