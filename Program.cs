@@ -37,6 +37,30 @@ taskID = "psu31_4";
 
 Console.WriteLine("\n-----------------------------------\n");
 
+//#### SECOND TASK 
+Response task2Response = await httpUtils.Get(baseURL + taskEndpoint + myPersonalID + "/" + taskID);
+Console.WriteLine(task2Response);
+Task task2 = JsonSerializer.Deserialize<Task>(task2Response.content);
+
+string[] parameterString = task2.parameters.Split(',');
+double sum = 0;
+foreach (string integerString in parameterString)
+{
+    double integer = double.Parse(integerString);
+    sum += integer;
+}
+string result = sum.ToString();
+
+Response task2AnswerResponse = await httpUtils.Post(baseURL + taskEndpoint + myPersonalID + "/" + taskID, result);
+Console.WriteLine($"Parameters: {task2.parameters}; Sum: {result}");
+Console.WriteLine($"Answer: {Colors.Green}{task2AnswerResponse}{ANSICodes.Reset}");
+
+
+taskID = "kuTw53L";
+
+Console.WriteLine("\n-----------------------------------\n");
+
+
 class Task
 {
     public string? title { get; set; }
