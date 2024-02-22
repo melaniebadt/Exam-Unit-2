@@ -4,7 +4,7 @@ using AnsiTools;
 using Colors = AnsiTools.ANSICodes.Colors;
 
 Console.Clear();
-Console.WriteLine("Starting Exam 2");
+Console.WriteLine("Starting Exam Unit 2");
 
 // SETUP 
 const string myPersonalID = "c205b98b832782cc70a8b178b224a6419cd30a782b297c818aae923f74141018";
@@ -78,15 +78,15 @@ foreach (string numberString in parameterSequence)
 
 primeNumbers.Sort();
 
-bool IsPrime(int number)
+bool IsPrime(int integers)
 {
-    if (number <= 1)
+    if (integers <= 1)
     {
         return false;
     }
-    for (int i = 2; i * i <= number; i++)
+    for (int i = 2; i * i <= integers; i++)
     {
-        if (number % i == 0)
+        if (integers % i == 0)
         {
             return false;
         }
@@ -104,6 +104,28 @@ taskID = "rEu25ZX";
 
 Console.WriteLine("\n-----------------------------------\n");
 
+//#### FOURTH TASK 
+Response task4Response = await httpUtils.Get(baseURL + taskEndpoint + myPersonalID + "/" + taskID);
+Console.WriteLine(task4Response);
+Task task4 = JsonSerializer.Deserialize<Task>(task4Response.content);
+
+Dictionary<char, int> RomanValues = new Dictionary<char, int>
+{
+    {'I', 1}, {'V', 5}, {'X', 10}, {'L', 50}, {'C', 100}, {'D', 500}, {'M', 1000}
+};
+
+int integerValue = 0;
+int prevValue = 0;
+foreach (char c in task4.parameters.Reverse())
+{
+    int value = RomanValues[c];
+    integerValue += (value < prevValue) ? -value : value;
+    prevValue = value;
+}
+
+Response task4AnswerResponse = await httpUtils.Post(baseURL + taskEndpoint + myPersonalID + "/" + taskID, integerValue.ToString());
+Console.WriteLine($"Roman Numerals: {task4.parameters}; Integers: {integerValue}");
+Console.WriteLine($"Answer: {Colors.Green}{task4AnswerResponse}{ANSICodes.Reset}");
 
 class Task
 {
