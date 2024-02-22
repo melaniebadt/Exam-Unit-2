@@ -4,7 +4,7 @@ using AnsiTools;
 using Colors = AnsiTools.ANSICodes.Colors;
 
 Console.Clear();
-Console.WriteLine("Starting Assignment 2");
+Console.WriteLine("Starting Exam 2");
 
 // SETUP 
 const string myPersonalID = "c205b98b832782cc70a8b178b224a6419cd30a782b297c818aae923f74141018";
@@ -57,6 +57,50 @@ Console.WriteLine($"Answer: {Colors.Green}{task2AnswerResponse}{ANSICodes.Reset}
 
 
 taskID = "kuTw53L";
+
+Console.WriteLine("\n-----------------------------------\n");
+
+//#### THIRD TASK 
+Response task3Response = await httpUtils.Get(baseURL + taskEndpoint + myPersonalID + "/" + taskID);
+Console.WriteLine(task3Response);
+Task task3 = JsonSerializer.Deserialize<Task>(task3Response.content);
+
+string[] parameterSequence = task3.parameters.Split(',');
+List<int> primeNumbers = new List<int>();
+foreach (string numberString in parameterSequence)
+{
+    int number = int.Parse(numberString);
+    if (IsPrime(number))
+    {
+        primeNumbers.Add(number);
+    }
+}
+
+primeNumbers.Sort();
+
+bool IsPrime(int number)
+{
+    if (number <= 1)
+    {
+        return false;
+    }
+    for (int i = 2; i * i <= number; i++)
+    {
+        if (number % i == 0)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+string finalResult = string.Join(",", primeNumbers);
+
+Response task3AnswerResponse = await httpUtils.Post(baseURL + taskEndpoint + myPersonalID + "/" + taskID, finalResult);
+Console.WriteLine($"Parameters: {task3.parameters}; Primenumber Sequence: {finalResult}");
+Console.WriteLine($"Answer: {Colors.Green}{task3AnswerResponse}{ANSICodes.Reset}");
+
+taskID = "rEu25ZX";
 
 Console.WriteLine("\n-----------------------------------\n");
 
